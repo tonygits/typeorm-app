@@ -1,32 +1,31 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
-import { Car } from "./cars.entity";
+import {Column, Entity} from "typeorm";
+import {Car} from "./cars.entity";
+import {BaseClass} from "./BaseClass";
 
-@Entity()
-export class User {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
+@Entity({
+    name: "users",
+})
+export class User extends BaseClass {
+    @Column({
+        type: "varchar",
+        length: 255,
+        nullable: false,
+    })
+    name: string;
 
-  @Column()
-  name: string;
+    @Column({
+        type: "varchar",
+        length: 255,
+        nullable: false,
+    })
+    email: string;
 
-  @Column()
-  email: string;
-
-  @Column()
-  password: string;
-  @OneToMany(() => Car, (car) => car.user)
-  cars: Car[];
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
+    @Column({
+        type: "varchar",
+        length: 255,
+        select: false,
+        nullable: false,
+    })
+    password: string;
+    cars: Car[];
 }

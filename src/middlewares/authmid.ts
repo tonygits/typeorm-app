@@ -6,11 +6,7 @@ dotenv.config();
 const { JWT_SECRET = "" } = process.env;
 
 export class AuthMiddleware {
-  static async isAuthenticated(
-    req: customRequest,
-    res: Response,
-    next: NextFunction
-  ) {
+  static async isAuthenticated(req: customRequest, res: Response, next: NextFunction) {
     try {
       // Check if the authorization header is valid
       if (!req.headers.authorization) {

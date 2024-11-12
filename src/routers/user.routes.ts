@@ -3,9 +3,9 @@ export const Router = express.Router();
 import { userControllers } from "../controllers/userControlers";
 
 Router.get("/users", userControllers.findAll);
-Router.post("/signin", userControllers.create);
+Router.post("/users", userControllers.create);
 Router.post("/login", userControllers.login);
-Router.get("/user/:id", userControllers.findById);
-Router.get("/user/:email", userControllers.findByEmail);
-Router.put("/user/:id", userControllers.update);
-Router.delete("/user/:id", userControllers.delete);
+Router.get("/users/:id", userControllers.findById);
+Router.get("/users/:email/email", userControllers.findByEmail);
+Router.put("/users/:id", userControllers.update);
+Router.delete("/users/:id", userControllers.delete);

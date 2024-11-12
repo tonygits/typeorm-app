@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import { payload } from "../dto/createuser.dto";
+import { payload } from "../entity/createuser.dto";
 dotenv.config();
 const { JWT_SECRET = "" } = process.env;
 export class encrypt {
@@ -11,6 +11,6 @@ export class encrypt {
   }
 
   static generateToken(payload: payload) {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: "1y" });
   }
 }
