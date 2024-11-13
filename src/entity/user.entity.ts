@@ -1,11 +1,11 @@
 import {Column, Entity} from "typeorm";
 import {Car} from "./cars.entity";
-import {BaseClass} from "./BaseClass";
+import {Baseclass} from "./baseclass";
 
 @Entity({
     name: "users",
 })
-export class User extends BaseClass {
+export class User extends Baseclass {
     @Column({
         type: "varchar",
         length: 100,

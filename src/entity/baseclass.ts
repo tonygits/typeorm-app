@@ -1,6 +1,6 @@
 import {CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 
-export class BaseClass {
+export class Baseclass {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 

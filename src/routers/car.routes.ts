@@ -1,7 +1,7 @@
 import express from "express";
 const Router = express.Router();
 
-import { carController } from "../controllers/carController";
+import { carController } from "../controllers/car.controller";
 import { AuthMiddleware } from "../middlewares/authmid";
 
 Router.get("/cars", AuthMiddleware.isAuthenticated, carController.findAll);
