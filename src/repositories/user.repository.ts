@@ -4,9 +4,7 @@ import {User} from "../entity/user.entity";
 export interface UserRepositoryInterface {
     findAll(): Promise<User[]>;
 
-    create(user: User): Promise<User>;
-
-    update(user: User): Promise<User>;
+    save(user: User): Promise<User>;
 
     delete(user: User): Promise<User>;
 
@@ -24,11 +22,7 @@ export class UserRepository implements UserRepositoryInterface {
         return await userRepository.query('SELECT id, name, email, created_at, updated_at FROM users ORDER BY created_at DESC');
     }
 
-    async create(user: User): Promise<User> {
-        return await userRepository.save(user);
-    }
-
-    async update(user: User): Promise<User> {
+    async save(user: User): Promise<User> {
         return await userRepository.save(user);
     }
 
@@ -43,7 +37,7 @@ export class UserRepository implements UserRepositoryInterface {
     }
 
     async findUserInfo(id: string): Promise<User | null> {
-        return await userRepository.findOneBy({id: id});
+        return await userRepository.findOne({where: {id: id}});
     }
 
     async findByEmail(email: string): Promise<User | null> {

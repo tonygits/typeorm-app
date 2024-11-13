@@ -32,7 +32,7 @@ export class carController {
             newCar.color = carReq.color;
             newCar.user_id = user?.id as string;
             newCar.user = user as User;
-            const car = await carRepo.create(newCar);
+            const car = await carRepo.save(newCar);
             res.status(HttpStatus.CREATED).json({
                 car,
             });
@@ -52,7 +52,7 @@ export class carController {
             carToUpdate.model = carReq.model;
             carToUpdate.year = carReq.year;
             carToUpdate.color = carReq.color;
-            const car = await carRepo.update(carToUpdate);
+            const car = await carRepo.save(carToUpdate);
             res.status(HttpStatus.OK).json(car);
         } catch (error) {
             res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error});

@@ -49,7 +49,7 @@ export class userControllers {
             newUser.name = userReq.name;
             newUser.email = userReq.email;
             newUser.password = hashedPass;
-            const user = await userRepo.create(newUser);
+            const user = await userRepo.save(newUser);
             res.status(HttpStatus.CREATED).json({
                 user: {
                     id: user.id,
@@ -76,7 +76,7 @@ export class userControllers {
             userToUpdate.name = userReq.name;
             userToUpdate.email = userReq.email;
             userToUpdate.password = userReq.password;
-            const user = await userRepo.update(userToUpdate);
+            const user = await userRepo.save(userToUpdate);
             res.status(HttpStatus.OK).json({
                 user: {
                     id: user.id,

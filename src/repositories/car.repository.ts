@@ -4,9 +4,7 @@ import {Car} from "../entity/cars.entity";
 export interface CarRepositoryInterface {
     findAll(): Promise<Car[]>;
 
-    create(car: Car, user_id: string): Promise<Car>;
-
-    update(car: Car): Promise<Car>;
+    save(car: Car): Promise<Car>;
 
     delete(car: Car): Promise<Car>;
 
@@ -20,10 +18,6 @@ const carRepository = AppDataSource.getRepository(Car);
 export class CarRepository implements CarRepositoryInterface {
     async findAll(): Promise<Car[]> {
         return await carRepository.find();
-    }
-
-    async create(car: Car): Promise<Car> {
-        return await carRepository.save(car);
     }
 
     async listByUserIds(userIds: string[]): Promise<Car[]> {
@@ -43,7 +37,7 @@ export class CarRepository implements CarRepositoryInterface {
                                           WHERE user_id IN (${args})`, params);
     }
 
-    async update(car: Car): Promise<Car> {
+    async save(car: Car): Promise<Car> {
         return await carRepository.save(car);
     }
 
@@ -53,6 +47,6 @@ export class CarRepository implements CarRepositoryInterface {
     }
 
     async findById(id: string): Promise<Car | null> {
-        return await carRepository.findOneBy({id: id});
+        return await carRepository.findOne({where: {id: id}});
     }
 }
