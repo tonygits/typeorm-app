@@ -8,7 +8,8 @@
     "dev": "tsc -w & nodemon build/index.js",
     "start": "tsc -w & node build/index.js",
     "typeorm": "typeorm-ts-node-commonjs",
-    "migration": "npm run typeorm migration:run -- -d src/database/config.ts",
+    "migration": "npm run typeorm migration:run -- -d src/data-source.ts",
+    "generate": "typeorm-ts-node-commonjs migration:generate ./src/migrations/new-migration -d ./src/data-source.ts",
     "build": "tsc",
     "build:lib": "tsc"
   },

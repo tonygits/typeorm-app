@@ -8,14 +8,14 @@ import {BaseClass} from "./BaseClass";
 export class User extends BaseClass {
     @Column({
         type: "varchar",
-        length: 255,
+        length: 100,
         nullable: false,
     })
     name: string;
 
     @Column({
         type: "varchar",
-        length: 255,
+        length: 100,
         nullable: false,
     })
     email: string;

@@ -1,4 +1,4 @@
-import {AppDataSource} from "../database/config";
+import {AppDataSource} from "../data-source";
 import {Car} from "../entity/cars.entity";
 
 export interface CarRepositoryInterface {

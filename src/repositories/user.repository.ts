@@ -1,4 +1,4 @@
-import {AppDataSource} from "../database/config";
+import {AppDataSource} from "../data-source";
 import {User} from "../entity/user.entity";
 
 export interface UserRepositoryInterface {

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import "reflect-metadata";
 import morgan from "morgan"
 import cors from 'cors';
-import { AppDataSource } from "./database/config";
+import { AppDataSource } from "./data-source";
 import { Router as userRouter } from "./routers/user.routes";
 import { Router as carRouter } from "./routers/car.routes";
 import options from "./middlewares/cors";
