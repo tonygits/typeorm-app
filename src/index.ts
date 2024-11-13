@@ -20,8 +20,8 @@ app.use(express.urlencoded({extended: true}));
 app.use(morgan("common"));
 
 //routers
-app.use("/api", userRouter);
-app.use("/api", carRouter);
+app.use("/api/users", userRouter);
+app.use("/api/cars", carRouter);
 
 AppDataSource.initialize()
   .then(() => {
