@@ -16,18 +16,21 @@ export class userControllers {
             users.forEach((user) => {
                 userIds.push(user.id);
             });
-            const carsRepo = new CarRepository();
-            const cars = await carsRepo.listByUserIds(userIds)
+
             let map1 = new Map<string, any>;
-            cars.forEach((car) => {
-                if (map1.has(car.user_id)) {
-                    map1.get(car.user_id).push(car)
-                } else {
-                    let mapCars: Car[] = [];
-                    mapCars.push(car);
-                    map1.set(car.user_id, mapCars);
-                }
-            })
+            if (userIds.length > 0) {
+                const carsRepo = new CarRepository();
+                const cars = await carsRepo.listByUserIds(userIds)
+                cars.forEach((car) => {
+                    if (map1.has(car.user_id)) {
+                        map1.get(car.user_id).push(car)
+                    } else {
+                        let mapCars: Car[] = [];
+                        mapCars.push(car);
+                        map1.set(car.user_id, mapCars);
+                    }
+                })
+            }
             users.forEach((user) => {
                 user.cars = [];
                 if (map1.has(user.id)) {

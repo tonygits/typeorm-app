@@ -1,7 +1,14 @@
 import * as dotenv from "dotenv";
 import { DataSource } from "typeorm";
+import path from "path";
 
-dotenv.config();
+if (process.env.NODE_ENV != "test") {
+  dotenv.config();
+}
+
+if (process.env.NODE_ENV == "test") {
+  dotenv.config({ path: path.resolve(__dirname, "../.env.test") });
+}
 
 const { DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME, NODE_ENV } = process.env;
 export const AppDataSource = new DataSource({

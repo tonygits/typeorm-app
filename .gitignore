@@ -1,4 +1,6 @@
 /build
 .env
+.env.development
+.env.test
 /node_modules
 build/Release

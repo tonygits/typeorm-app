@@ -1,0 +1,30 @@
+services:
+  api:
+    container_name: typeorm-app
+    build: .
+    environment:
+      - PORT=3080
+      - DB_USERNAME=typeuser
+      - DB_HOST=postgresdb2
+      - DB_NAME=typedb
+      - DB_PASSWORD=pass11657
+      - DB_PORT=5438
+      - JWT_SECRET=yourjwtsecret
+    ports:
+      - 3080:3050
+    depends_on:
+     - postgresdb2
+
+  postgresdb2:
+    container_name: postgresdb2
+    restart: unless-stopped
+    image: postgres:16-alpine
+    ports:
+      - '5438:5432'
+    volumes:
+      - /Users/$USER/pgdata:/var/lib/postgres
+      - ./docker-setup/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_USER=typeuser
+      - POSTGRES_PASSWORD=pass11657
+      - POSTGRES_DB=typedb

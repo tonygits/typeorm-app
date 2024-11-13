@@ -7,8 +7,15 @@ import { AppDataSource } from "./data-source";
 import { Router as userRouter } from "./routers/user.routes";
 import { Router as carRouter } from "./routers/car.routes";
 import options from "./middlewares/cors";
+import path from "path";
 
-dotenv.config();
+if (process.env.NODE_ENV != "test") {
+    dotenv.config();
+}
+
+if (process.env.NODE_ENV == "test") {
+    dotenv.config({ path: path.resolve(__dirname, "../.env.test") });
+}
 
 const app = express();
 const port = process.env.PORT || 3080;

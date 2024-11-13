@@ -1,8 +1,7 @@
 import { NextFunction, Response } from "express";
 import { customRequest } from "../interfaces/request.interface";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-dotenv.config();
+
 const { JWT_SECRET = "" } = process.env;
 
 export class AuthMiddleware {
