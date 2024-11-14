@@ -27,7 +27,7 @@ export class UserRepository implements UserRepositoryInterface {
     }
 
     async delete(user: User): Promise<User> {
-        await userRepository.delete(user);
+        await userRepository.delete(user.id);
         return user;
     }
 

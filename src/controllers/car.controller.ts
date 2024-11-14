@@ -11,9 +11,9 @@ export class carController {
         try {
             const carRepo = new CarRepository();
             const cars = await carRepo.findAll();
-            res.status(HttpStatus.OK).json(cars);
-        } catch (error) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error});
+            return res.status(HttpStatus.OK).json(cars);
+        } catch (error: any) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});
         }
     }
 
@@ -33,11 +33,9 @@ export class carController {
             newCar.user_id = user?.id as string;
             newCar.user = user as User;
             const car = await carRepo.save(newCar);
-            res.status(HttpStatus.CREATED).json({
-                car,
-            });
-        } catch (error) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error});
+            return res.status(HttpStatus.CREATED).json(car);
+        } catch (error: any) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});
         }
     }
 
@@ -46,16 +44,16 @@ export class carController {
             const carRepo = new CarRepository();
             const carToUpdate = await carRepo.findById(req.params.id);
             if (!carToUpdate) {
-                throw new Error("Car not found");
+                return res.status(HttpStatus.NOT_FOUND).json({error: "Car not found"});
             }
             const carReq = req.body
             carToUpdate.model = carReq.model;
             carToUpdate.year = carReq.year;
             carToUpdate.color = carReq.color;
             const car = await carRepo.save(carToUpdate);
-            res.status(HttpStatus.OK).json(car);
-        } catch (error) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error});
+            return res.status(HttpStatus.OK).json(car);
+        } catch (error: any) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});
         }
     }
 
@@ -64,12 +62,12 @@ export class carController {
             const carRepo = new CarRepository();
             const carToDelete = await carRepo.findById(req.params.id);
             if (!carToDelete) {
-                throw new Error("Car not found");
+                return res.status(HttpStatus.NOT_FOUND).json({error: "Car not found"});
             }
             const car = await carRepo.delete(carToDelete);
-            res.status(HttpStatus.OK).json(car);
-        } catch (error) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error});
+            return res.status(HttpStatus.OK).json(car);
+        } catch (error: any) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});
         }
     }
 
@@ -77,9 +75,9 @@ export class carController {
         try {
             const carRepo = new CarRepository();
             const car = await carRepo.findById(req.params.id);
-            res.status(HttpStatus.OK).json(car);
-        } catch (error) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error});
+            return res.status(HttpStatus.OK).json(car);
+        } catch (error: any) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});
         }
     }
 }

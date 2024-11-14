@@ -37,9 +37,9 @@ export class userControllers {
                     user.cars = map1.get(user.id)
                 }
             })
-            res.status(HttpStatus.OK).json({users: users});
+            return res.status(HttpStatus.OK).json({users: users});
         } catch (err: any) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
         }
     }
 
@@ -47,13 +47,17 @@ export class userControllers {
         try {
             const userRepo = new UserRepository();
             const userReq = req.body;
+            const userExists = await userRepo.findByEmail(userReq.email);
+            if (userExists) {
+                return res.status(HttpStatus.CONFLICT).json({error: "user with email already exists"});
+            }
             const hashedPass = await encrypt.encryptpass(userReq.password);
             const newUser = new User();
             newUser.name = userReq.name;
             newUser.email = userReq.email;
             newUser.password = hashedPass;
             const user = await userRepo.save(newUser);
-            res.status(HttpStatus.CREATED).json({
+            return res.status(HttpStatus.CREATED).json({
                 user: {
                     id: user.id,
                     email: user.email,
@@ -63,7 +67,7 @@ export class userControllers {
                 }
             });
         } catch (err: any) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
         }
     }
 
@@ -74,13 +78,13 @@ export class userControllers {
             const userReq = req.body;
             const userToUpdate = await userRepo.findById(id);
             if (!userToUpdate) {
-                throw new Error("User not found");
+                return res.status(HttpStatus.NOT_FOUND).json({error: "User not found"});
             }
             userToUpdate.name = userReq.name;
             userToUpdate.email = userReq.email;
             userToUpdate.password = userReq.password;
             const user = await userRepo.save(userToUpdate);
-            res.status(HttpStatus.OK).json({
+            return res.status(HttpStatus.OK).json({
                 user: {
                     id: user.id,
                     email: user.email,
@@ -90,7 +94,7 @@ export class userControllers {
                 }
             });
         } catch (err: any) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
         }
     }
 
@@ -99,10 +103,10 @@ export class userControllers {
             const userRepo = new UserRepository();
             const userToDelete = await userRepo.findById(req.params.id);
             if (!userToDelete) {
-                throw new Error("User not found");
+                return res.status(HttpStatus.NOT_FOUND).json({error: "User not found"});
             }
             const user = await userRepo.delete(userToDelete);
-            res.status(HttpStatus.OK).json({
+            return res.status(HttpStatus.OK).json({
                 user: {
                     id: user.id,
                     email: user.email,
@@ -112,7 +116,7 @@ export class userControllers {
                 }
             });
         } catch (err: any) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
         }
     }
 
@@ -120,9 +124,9 @@ export class userControllers {
         try {
             const userRepo = new UserRepository();
             const user = await userRepo.findUserInfo(req.params.id);
-            res.status(HttpStatus.OK).json({user: user});
+            return res.status(HttpStatus.OK).json({user: user});
         } catch (err: any) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
         }
     }
 
@@ -130,7 +134,7 @@ export class userControllers {
         try {
             const userRepo = new UserRepository();
             const user = await userRepo.findByEmail(req.params.email);
-            res.status(HttpStatus.OK).json({
+            return res.status(HttpStatus.OK).json({
                 user: {
                     id: user?.id,
                     email: user?.email,
@@ -140,7 +144,7 @@ export class userControllers {
                 }
             });
         } catch (err: any) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
         }
     }
 
@@ -162,7 +166,7 @@ export class userControllers {
         const token = encrypt.generateToken({id: user.id});
         res.setHeader("token", token);
         res.setHeader("Content-Type", "application/json");
-        res.status(HttpStatus.OK).json({
+        return res.status(HttpStatus.OK).json({
             message: "Login successful", user: {
                 id: user.id,
                 email: user.email,

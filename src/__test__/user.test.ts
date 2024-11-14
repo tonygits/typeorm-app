@@ -37,8 +37,8 @@ beforeEach(async () => {
 describe("get test environment", () => {
     it("check environment", async () => {
         console.log(`we are in ${process.env.DB_NAME} ${process.env.NODE_ENV} environment`)
-    })
-})
+    });
+});
 
 describe("POST /api/users", () => {
     it("should register a new user and return 201 status", async () => {

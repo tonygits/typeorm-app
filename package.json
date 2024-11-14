@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "tsc -w & nodemon build/index.js",
-    "start": "tsc -w & node build/index.js",
+    "start": "tsc -w & nodemon build/index.js",
     "test": "jest --watchAll --no-cache --detectOpenHandles",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration": "npm run typeorm migration:run -- -d src/data-source.ts",

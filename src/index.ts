@@ -30,6 +30,11 @@ app.use(morgan("common"));
 app.use("/api/users", userRouter);
 app.use("/api/cars", carRouter);
 
+// Error handling for non-existing routes
+app.use("*", (req: express.Request, res: express.Response) => {
+    res.status(404).json({ message: "Endpoint Not Found" });
+});
+
 AppDataSource.initialize()
   .then(() => {
     console.log("Database connected");

@@ -42,7 +42,7 @@ export class CarRepository implements CarRepositoryInterface {
     }
 
     async delete(car: Car): Promise<Car> {
-        await carRepository.delete(car);
+        await carRepository.delete(car.id);
         return car;
     }
 
