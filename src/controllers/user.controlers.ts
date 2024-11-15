@@ -124,6 +124,9 @@ export class userControllers {
         try {
             const userRepo = new UserRepository();
             const user = await userRepo.findUserInfo(req.params.id);
+            if (!user) {
+                return res.status(HttpStatus.NOT_FOUND).json({error: "User not found"});
+            }
             return res.status(HttpStatus.OK).json({user: user});
         } catch (err: any) {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message});
@@ -134,6 +137,9 @@ export class userControllers {
         try {
             const userRepo = new UserRepository();
             const user = await userRepo.findByEmail(req.params.email);
+            if (!user) {
+                return res.status(HttpStatus.NOT_FOUND).json({error: "User not found"});
+            }
             return res.status(HttpStatus.OK).json({
                 user: {
                     id: user?.id,
@@ -158,7 +164,6 @@ export class userControllers {
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-
         if (!isMatch) {
             return res.status(HttpStatus.UNAUTHORIZED).json({error: "Invalid credentials"});
         }

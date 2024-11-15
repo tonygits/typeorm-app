@@ -27,6 +27,7 @@ export class Car extends Baseclass{
   })
   year: string;
 
+  @Index("cars_name_idx")
   @Column({
     type: "varchar",
     length: 100,
@@ -35,13 +36,15 @@ export class Car extends Baseclass{
   color: string;
 
   @ManyToOne(() => User, (user) => user.cars, {
+    nullable: false,
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })
-  @Index("user_id_idx")
+  @Index("cars_user_id_idx")
   @JoinColumn({
-    name: "user_id"
+    name: "user_id",
+    referencedColumnName: 'id',
   })
-  user_id: string;
+  user_id: string
   user: User;
 }

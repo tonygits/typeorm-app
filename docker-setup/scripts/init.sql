@@ -1,6 +1,6 @@
-create user devuser with password 'pass11657';
-alter role devuser superuser createrole createdb replication;
-create database devdb;
-create database devdb_test;
-alter database devdb owner to devuser;
-alter database devdb_test owner to devuser;
+create user typeuser with password 'pass11657';
+alter role typeuser superuser createrole createdb replication;
+create database typedb;
+create database typedb_test;
+alter database typedb owner to typeuser;
+alter database typedb_test owner to typeuser;

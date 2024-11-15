@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
-    "dev": "tsc -w & nodemon build/index.js",
+    "dev": "nm run remove & tsc -w & nodemon build/index.js",
     "start": "tsc -w & nodemon build/index.js",
     "test": "jest --watchAll --no-cache --detectOpenHandles",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration": "npm run typeorm migration:run -- -d src/data-source.ts",
     "generate": "typeorm-ts-node-commonjs migration:generate ./src/migrations/new-migration -d ./src/data-source.ts",
-    "build": "tsc",
+    "remove": "rm -rf ./build",
+    "build": "npm run remove & tsc",
     "build:lib": "tsc"
   },
   "keywords": [],

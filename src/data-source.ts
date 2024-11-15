@@ -19,7 +19,10 @@ export const AppDataSource = new DataSource({
   password: DB_PASS,
   database: DB_NAME,
   entities: [__dirname + "/**/*.entity{.ts,.js}"],
-  synchronize: NODE_ENV === "development" ? true : false,
-  logging: NODE_ENV === "development" ? true : false,
-  migrations: [__dirname + '/migrations/*.ts'],
+  synchronize: false,
+  logging: NODE_ENV === "development" ? ["error","info","warn", "log"] : false,
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
+  subscribers: [],
+  cache: true,
+  ssl: NODE_ENV === "production"? { rejectUnauthorized: false } : false,
 });
