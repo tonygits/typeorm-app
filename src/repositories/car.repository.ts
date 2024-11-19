@@ -1,7 +1,10 @@
 import {AppDataSource} from "../data-source";
 import {Car} from "../entity/cars.entity";
+import {buildQuery} from "../helpers/buildQuery";
 
-export interface CarRepositoryInterface {
+interface CarRepositoryInterface {
+    countCars(): Promise<number>;
+
     findAll(): Promise<Car[]>;
 
     save(car: Car): Promise<Car>;
@@ -15,26 +18,33 @@ export interface CarRepositoryInterface {
 
 const carRepository = AppDataSource.getRepository(Car);
 
+const selectCarsSQL = `SELECT id, name, model, year, color, user_id, created_at, updated_at
+                       FROM cars
+                       WHERE true`;
+
+const countCarsSQL = `SELECT COUNT(id)
+                      FROM cars
+                      WHERE true `;
+
 export class CarRepository implements CarRepositoryInterface {
+    async countCars(): Promise<number> {
+        return await carRepository.query(countCarsSQL);
+    }
+
     async findAll(): Promise<Car[]> {
-        return await carRepository.find();
+        return await carRepository.query(`${selectCarsSQL} ORDER BY created_at DESC`);
     }
 
     async listByUserIds(userIds: string[]): Promise<Car[]> {
-        let params: any[] = [];
-        params.push(...userIds)
+        let carParams: any[] = [];
         let currentIndex = 0;
-        let args: string = "";
-        userIds.forEach(userId => {
-            if (currentIndex > 0) {
-                args += ", ";
-            }
-            args += "$" + (currentIndex + 1);
-            currentIndex++;
-        })
-        return await carRepository.query(`SELECT *
-                                          FROM cars
-                                          WHERE user_id IN (${args})`, params);
+        let args = "";
+        //other args
+        let {ParamArgs, CurrentIndex} = buildQuery.getQueryArgs(userIds, currentIndex)
+        args += ParamArgs
+        carParams.push(...userIds)
+        currentIndex = CurrentIndex
+        return await carRepository.query(`${selectCarsSQL} AND user_id IN (${args})`, carParams);
     }
 
     async save(car: Car): Promise<Car> {

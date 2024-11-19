@@ -51,7 +51,7 @@ export class userControllers {
             if (userExists) {
                 return res.status(HttpStatus.CONFLICT).json({error: "user with email already exists"});
             }
-            const hashedPass = await encrypt.encryptpass(userReq.password);
+            const hashedPass = await encrypt.encryptPassword(userReq.password);
             const newUser = new User();
             newUser.name = userReq.name;
             newUser.email = userReq.email;

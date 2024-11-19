@@ -1,6 +1,7 @@
 import express from "express";
+
 export const Router = express.Router();
-import { userControllers } from "../controllers/user.controlers";
+import {userControllers} from "../controllers/user.controlers";
 
 Router.get("/", userControllers.findAll);
 Router.post("/", userControllers.create);

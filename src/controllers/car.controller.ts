@@ -6,60 +6,74 @@ import HttpStatus from "http-status"
 import {Car} from "../entity/cars.entity";
 import {User} from "../entity/user.entity";
 import {AppDataSource} from "../data-source";
+import {encrypt} from "../helpers/encrypt";
+
+const carRepo = new CarRepository();
+const userRepo = new UserRepository();
 
 export class carController {
     static async findAll(req: Request, res: Response) {
         try {
-            const carRepo = new CarRepository();
             const cars = await carRepo.findAll();
+            let userIds: string[] = [];
+            cars.forEach((car) => {
+                userIds.push(car.user_id);
+            });
+            const users = await userRepo.listByIds(userIds);
+            let map2 = new Map<string, User>;
+            users.forEach((user) => {
+                map2.set(user.id, user);
+            });
+            cars.forEach((car) => {
+                if (map2.has(car.user_id)) {
+                    car.user = map2.get(car.user_id) as User;
+                }
+            });
             return res.status(HttpStatus.OK).json(cars);
         } catch (error: any) {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});
         }
     }
 
-    static async create(req: customRequest, res: Response) {
+    static async createCarUserTransaction(req: customRequest, res: Response) {
         try {
-
-            const userRepo = new UserRepository();
-            const user = await userRepo.findUserInfo(req.currentUser.id);
-            if (!user){
-                return res.status(HttpStatus.FORBIDDEN).json({error: "User not allowed to make this request"});
-            }
-            const queryRunner = AppDataSource.createQueryRunner()
-            // establish real database connection using our new query runner
-            await queryRunner.connect()
-            // lets now open a new transaction:
-            await queryRunner.startTransaction()
-
-            try {
-                const user1 = new User();
-                user1.name = "John Doe";
-                user1.email = "john.doe@example.com";
-                user1.password = "password"
+            await AppDataSource.manager.transaction(async (transactionalEntityManager) => {
+                let user1 = new User();
+                user1.name = "John7";
+                user1.email = "john7@example.com";
+                user1.password = await encrypt.encryptPassword("password23")
 
                 const car1 = new Car();
-                car1.name = "Mazda Atenza 2.0L";
-                car1.model = "Mazda";
-                car1.year = "2015";
-                car1.color = "silve";
-                car1.user_id = user1.id as string;
+                car1.name = "VW Golf 2.0L";
+                car1.model = "VW";
+                car1.year = "2012";
+                car1.color = "black";
 
                 // execute some operations on this transaction:
-                await queryRunner.manager.save(user1)
-                await queryRunner.manager.save(car1)
+                const userTxnRepo = transactionalEntityManager.getRepository(User);
+                const userRes = await userRepo.findByEmail('john7@example.com') //query('SELECT * FROM users WHERE email=$1', ['john7@example.com']);
+                if (userRes) {
+                    return res.status(HttpStatus.CONFLICT).json({error: "User already exists"});
+                }
+                const user1Result = await userTxnRepo.save(user1);
+                car1.user_id = user1Result.id;
 
-                // commit transaction now:
-                await queryRunner.commitTransaction()
-            } catch (err) {
-                // since we have errors let's rollback changes we made
-                await queryRunner.rollbackTransaction()
-            } finally {
-                // you need to release query runner which is manually created:
-                await queryRunner.release()
+                const carTxnRepo = transactionalEntityManager.getRepository(Car);
+                const carResult = await carTxnRepo.save(car1)
+                return res.status(HttpStatus.OK).json({car: carResult});
+            })
+        } catch (error: any) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: "error performing action"});
+        }
+    }
+
+    static async create(req: customRequest, res: Response) {
+        try {
+            const user = await userRepo.findUserInfo(req.currentUser.id);
+            if (!user) {
+                return res.status(HttpStatus.FORBIDDEN).json({error: "User not allowed to make this request"});
             }
 
-            const carRepo = new CarRepository();
             const carReq = req.body
             const newCar = new Car();
             newCar.name = carReq.name;
@@ -77,7 +91,6 @@ export class carController {
 
     static async update(req: Request, res: Response) {
         try {
-            const carRepo = new CarRepository();
             const carToUpdate = await carRepo.findById(req.params.id);
             if (!carToUpdate) {
                 return res.status(HttpStatus.NOT_FOUND).json({error: "car not found"});
@@ -95,7 +108,6 @@ export class carController {
 
     static async delete(req: Request, res: Response) {
         try {
-            const carRepo = new CarRepository();
             const carToDelete = await carRepo.findById(req.params.id);
             if (!carToDelete) {
                 return res.status(HttpStatus.NOT_FOUND).json({error: "Car not found"});
@@ -109,7 +121,6 @@ export class carController {
 
     static async findById(req: Request, res: Response) {
         try {
-            const carRepo = new CarRepository();
             const car = await carRepo.findById(req.params.id);
             return res.status(HttpStatus.OK).json(car);
         } catch (error: any) {
